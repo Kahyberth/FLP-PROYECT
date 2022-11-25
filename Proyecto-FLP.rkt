@@ -294,6 +294,38 @@
       (lst-exp (exp prim)
                (let([x(map(lambda(y)(evaluar-expresion y env))exp)])
                  (evaluar-alternativa prim x)))
+
+      (begin-exp (exp lexp)
+                 (if (null? lexp)
+                     (evaluar-expresion exp env)
+                     (begin
+                       (evaluar-expresion exp env)
+                       (letrec
+                           (
+                            (eval-exps (lambda (lexp)
+                                         (cond
+                                           [(null? (cdr lexp)) (evaluar-expresion (car lexp) env)]
+                                           [else
+                                            (begin
+                                              (evaluar-expresion (car lexp) env)
+                                              (eval-exps (cdr lexp)))])
+                                         )))
+                         (eval-exps lexp)
+                         )
+                       )
+                     )
+                 )
+      (set-exp (id exp)
+               (let
+                   (
+                    (ref (apply-env-ref env id))
+                    (val (evaluar-expresion exp env))
+                    )
+                 (begin
+                   (set-ref! ref val)
+                   0)
+                 )
+               )
       
       (else 0))))
 
@@ -304,7 +336,7 @@
       [(null? lst)0]
       [else (prim (car lst) (operacion-lst prim (cdr lst) ac))])))
 
-;Evaluar-primitivas booleanas
+;Evaluar-primitivas booleanas 
 (define evaluar-bool-exp
   (lambda (bool-exp env)
     (cases bool-expresion bool-exp
@@ -385,7 +417,7 @@
 
 ;Muta el valor pasado por posición del vector
 
-(define setref!
+(define set-ref!
   (lambda (ref val)
     (primitiva-setref! ref val)))
 
