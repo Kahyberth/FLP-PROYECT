@@ -1,3 +1,4 @@
 # FLP-PROYECT 🔴
 
-![2313123213](https://user-images.githubusercontent.com/69951209/203904709-3ac0580c-719b-45c4-9875-0a6098255d38.gif)
+**This project covers all the concepts seen in the Fundamentals of Programming Languages course, in which a language is developed using Dr. Racket's SLLGEN library and based on the official guide [Essentials of Programming Languages Language](https://docs.racket-lang.org/eopl/index.html)**
+
