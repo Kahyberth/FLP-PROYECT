@@ -146,20 +146,101 @@
 ;Definicion de ambientes
 (define-datatype ambiente ambiente?
   (ambiente-vacio)
-  (ambiente-extendido-ref
-   (lids (list-of symbol?))
-   (lvalue vector?)
-   (old-env ambiente?)))
+  (ambiente-extendido
+   (lid (list-of symbol?))
+   (lva vector?)
+   (env ambiente?))
+  (ambiente-extendido-recursivo
+   (proc-names (list-of symbol?))
+   (llargs (list-of (list-of symbol?)))
+   (lbodys (list-of expresion?)) ;Cuerpo procs
+   (env ambiente?));Expresion a evaluarambiente-extendido-recursivo
+   )
+  
 
-(define ambiente-extendido
-  (lambda (lids lvalue old-env)
-    (ambiente-extendido-ref lids (list->vector lvalue) old-env)))
+;(define ambiente-extendido-recursivo
+;  (lambda(procnames lids body old-env)
+;   (let
+;        ([vec-clausuras (make-vector (length procnames))])
+;      (letrec
+;          (
+;           (env (ambiente-extendido-ref procnames vec-clausuras old-env))
+;           (obtener-clausuras
+;            (lambda(lids body pos)
+;              (cond
+;                [(null? lids)env]
+;                [else
+;                 (begin
+;                   (vector-set! vec-clausuras pos
+;                                (closure (car lids) (car body) env))
+;                   (obtener-clausuras (cdr lids) (cdr body) (+ 1 pos)))]))))
+;           (obtener-clausuras lids body 0)))))
 
-;Ambiente inicial
+
+(define apply-env
+  (lambda (amb var)
+    (deref (apply-env-ref amb var))))
+
+
+(define apply-env-ref
+  (lambda (env var)
+    (cases ambiente env
+      (ambiente-vacio () (eopl:error "No se encuentra la ligadura " var))
+      (ambiente-extendido
+       (lid lval old-env)
+       (letrec
+           (
+            (buscar-id
+             (lambda (lidd lvall varr pos)
+               (cond
+                 [(null? lidd) (apply-env-ref old-env varr)]
+                 [(eqv? (car lidd) varr) (a-ref pos lvall)] ;;Ya no retorno el valor si no la referencia
+                 [else (buscar-id (cdr lidd) lvall varr (+ pos 1))])))
+            )
+         (buscar-id lid lval var 0)))
+      (ambiente-extendido-recursivo
+       (proc-names llargs bodies env-old)
+       (letrec
+           (
+            (buscar-proc
+             (lambda (proc-names llargs bodies)
+               (cond
+                 [(null? proc-names)
+                  (apply-env-ref env-old var)]
+                 [(eqv?
+                   (car proc-names)
+                   var)
+                  (a-ref
+                   0
+                   (list->vector 
+                    (list(clausura
+                    (car llargs)
+                    (car bodies)
+                    env)))) ;Aqui generamos la clausura
+                  ]
+                 [else
+                  (buscar-proc (cdr proc-names)
+                               (cdr llargs)
+                               (cdr bodies))])))
+            )
+         (buscar-proc proc-names llargs bodies)))
+      )
+    )
+  )
+
+
+    
+
 (define ambiente-inicial
-  (ambiente-extendido '(x y z) '(4 2 5)
-                      (ambiente-extendido '(a b c) '(4 5 6)
+  (ambiente-extendido '(x y z) (list->vector '(1 2 3)) 
+                      (ambiente-extendido '(a b c) (list->vector '(4 5 6))
                                           (ambiente-vacio))))
+
+
+(define-datatype procval procval?
+  (clausura (lid (list-of symbol?))
+            (body expresion?)
+            (env ambiente?)))
 
 
 
