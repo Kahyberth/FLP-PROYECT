@@ -107,7 +107,7 @@
     (primitiva ("/")div-prim)     ; Ejemplos
     (primitiva ("add1")add1-prim) ; Array.[1].add1
     (primitiva ("sub1")sub1-prim) ; Array.[2].sub1
-    (primitiva ("%")resto-prim)   ; (20 % 2)
+    (primitiva ("%")mod-prim)   ; (20 % 2)
     (primitiva ("length")length-prim) ; Array.[2,3,21,5,6,12].length
     (primitiva ("concat")concat-prim) ; Array.[Hola,Mundo].concat
     
@@ -176,7 +176,7 @@
              (lambda (lidd lvall varr pos)
                (cond
                  [(null? lidd) (apply-env-ref old-env varr)]
-                 [(eqv? (car lidd) varr) (a-ref pos lvall)] ;;Ya no retorno el valor si no la referencia
+                 [(eqv? (car lidd) varr) (a-ref pos lvall)]
                  [else (buscar-id (cdr lidd) lvall varr (+ pos 1))])))
             )
          (buscar-id lid lval var 0)))
@@ -198,17 +198,13 @@
                     (list(clausura
                     (car llargs)
                     (car bodies)
-                    env)))) ;Aqui generamos la clausura
+                    env))))
                   ]
                  [else
                   (buscar-proc (cdr proc-names)
                                (cdr llargs)
-                               (cdr bodies))])))
-            )
-         (buscar-proc proc-names llargs bodies)))
-      )
-    )
-  )
+                               (cdr bodies))]))))
+         (buscar-proc proc-names llargs bodies))))))
 
 
     
@@ -232,8 +228,8 @@
     (cases expresion exp
       (lit-exp (exp) exp)
       (var-exp (exp) exp)
-      (prim-exp (prim)(evaluar-primitivas prim env)) ;Prim-exp
-      (bool-exp(exp)(evaluar-bool-exp exp env))  ;Bool-exp
+      (prim-exp (prim)(evaluar-primitivas prim env)) 
+      (bool-exp(exp)(evaluar-bool-exp exp env))  
       (text-exp (exp)(let([x(map(lambda(x) (symbol->string x))exp)])(car x)))
       (console-exp (txt)(let
                   ([texto (map(lambda(x) (symbol->string x))txt)])
@@ -279,24 +275,19 @@
 
       (begin-exp (exp lexp)
                  (if (null? lexp)
+                   (evaluar-expresion exp env)
+                   (begin
                      (evaluar-expresion exp env)
-                     (begin
-                       (evaluar-expresion exp env)
-                       (letrec
-                           (
-                            (eval-exps (lambda (lexp)
-                                         (cond
-                                           [(null? (cdr lexp)) (evaluar-expresion (car lexp) env)]
-                                           [else
-                                            (begin
-                                              (evaluar-expresion (car lexp) env)
-                                              (eval-exps (cdr lexp)))])
-                                         )))
-                         (eval-exps lexp)
-                         )
-                       )
-                     )
-                 )
+                     (letrec
+                         ((eval-exps (lambda (lexp)
+                                       (cond
+                                         [(null? (cdr lexp)) (evaluar-expresion (car lexp) env)]
+                                         [else
+                                          (begin
+                                            (evaluar-expresion (car lexp) env)
+                                            (eval-exps (cdr lexp)))]))))
+                       (eval-exps lexp)))))
+      
       (set-exp (id exp)
                (let
                    (
@@ -305,18 +296,9 @@
                     )
                  (begin
                    (set-ref! ref val)
-                   0)
-                 )
-               )
-      
+                   0)))
       (else 0))))
 
-
-(define operacion-lst
-  (lambda (prim lst ac)
-    (cond
-      [(null? lst)0]
-      [else (prim (car lst) (operacion-lst prim (cdr lst) ac))])))
 
 ;Evaluar-primitivas booleanas 
 (define evaluar-bool-exp
@@ -354,6 +336,7 @@
     (cases bool-oper logic
       (and-op ()(and lval lval2))
       (or-op () (or lval lval2))
+      (not-op () (not lval))
       (else 0))))
 
 (define evaluar-primitivas
@@ -363,9 +346,6 @@
       (res-prim () (operacion - lval lval2 ls-exp 0))
       (mul-prim () (operacion * lval lval2 ls-exp 0))
       (div-prim () (operacion / lval lval2 ls-exp 0))
-      (add1-prim () (+ 1 (car lval)))
-      (sub1-prim () (- (car lval)1 ))
-      (length-prim () (length lval))
       (else "ok"))))
 
 (define evaluar-alternativa
@@ -375,6 +355,7 @@
       (res-prim () (- (car lval1) (cadr lval1)))
       (mul-prim () (* (car lval1) (cadr lval1)))
       (div-prim () (/ (car lval1) (cadr lval1)))
+      (mod-prim () (modulo (car lval1) (cadr lval1)))
       (length-prim () (length lval1))
       (concat-prim () (string-append (car lval1) (cadr lval1)))
       (add1-prim () (+ 1 (car lval1)))
