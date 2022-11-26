@@ -123,8 +123,8 @@
 
     ;Bool-operation
     
-    (bool-oper("and")and-prims) ;.[{3 < 4} and {3 > 4}]        |
-    (bool-oper("or")or-prims)   ;.[{2 <= 4} or {4 == 4}]       v segundo ejemplo
+    (bool-oper("and")and-op) ;.[{3 < 4} and {3 > 4}]        |
+    (bool-oper("or")or-op)   ;.[{2 <= 4} or {4 == 4}]       v segundo ejemplo
     (bool-oper("not")not-op)    ; not .[{4 < 4} or {3 > 2}] // .[{4 < 4} not {3 > 2}]
 
     ))
@@ -157,24 +157,6 @@
    (env ambiente?));Expresion a evaluarambiente-extendido-recursivo
    )
   
-
-;(define ambiente-extendido-recursivo
-;  (lambda(procnames lids body old-env)
-;   (let
-;        ([vec-clausuras (make-vector (length procnames))])
-;      (letrec
-;          (
-;           (env (ambiente-extendido-ref procnames vec-clausuras old-env))
-;           (obtener-clausuras
-;            (lambda(lids body pos)
-;              (cond
-;                [(null? lids)env]
-;                [else
-;                 (begin
-;                   (vector-set! vec-clausuras pos
-;                                (closure (car lids) (car body) env))
-;                   (obtener-clausuras (cdr lids) (cdr body) (+ 1 pos)))]))))
-;           (obtener-clausuras lids body 0)))))
 
 
 (define apply-env
@@ -345,6 +327,13 @@
       (bool-prims (expresion bool expresion1)(let((lista-exp2(evaluar-expresion expresion env))
                                                   (lista-exp3(evaluar-expresion expresion1 env)))
                                                (evaluar-primitiva-bool bool lista-exp2 lista-exp3)))
+      (bool-logic (exp bool-logic exp2)(let
+                                           (
+                                            [ls-exp1 (evaluar-expresion exp env)]
+                                            [ls-exp2 (evaluar-expresion exp2 env)]
+                                            )
+                                         (evaluar-operadores bool-logic ls-exp1 ls-exp2)))
+                                         
       (else "ok"))))
 
 ;Evaluar primitivas booleanas
@@ -358,6 +347,14 @@
       (igual-prims () (eqv? lval1 lval2))
       (difer-prims () (eqv? (not lval1) lval2))
       (else "ok"))))
+
+
+(define evaluar-operadores
+  (lambda (logic lval lval2)
+    (cases bool-oper logic
+      (and-op ()(and lval lval2))
+      (or-op () (or lval lval2))
+      (else 0))))
 
 (define evaluar-primitivas
   (lambda (prim lval lval2 prim2 ls-exp)
@@ -427,7 +424,6 @@
     (cases referencia ref
       (a-ref(pos vec)
             (vector-set! vec pos val)))))
-
 
 
 
