@@ -3,9 +3,7 @@
 
 ;INTEGRANTES
 ;Kahyberth Stiven Gonzalez Sayas:2060121
-;Juan Camilo Varela Ocoro:2060166
-;Daniel Stiven Ramirez:2067524
-;Maria Camila Muñoz:2067738
+;Juan Camilo Varela Ocoro:206016
 
 ;Nota: Cada ejemplo aparece al lado de cada especificacion lexicografica.
 
@@ -85,7 +83,7 @@
     (expresion("if" bool-expresion "then" expresion "else" expresion ";")if-exp) ;if {3 < 2} then 2 else 3 end
     (expresion("proc" "(" (separated-list identificador ",") ")" expresion "end")proc-exp) ; proc (Arroz,Pollo,Gasimba) Pollo end
     (expresion("for" identificador "=" expresion "to" expresion "do" expresion "end")for-exp) ;for bucle = Array.[1,2,3,4,5].length to 4 do 5 end
-    (expresion("while" bool-expresion "then" expresion "end")while-exp) ;while {x < 3} then (x = (x + 1)) end, example
+    (expresion("while"  expresion "then" expresion "end")while-exp) ;while {x < 3} then (x = (x + 1)) end, example
     (expresion("struct" "=" identificador "(" (separated-list expresion ",") ")")struct-exp) ;struct = Menu (Salmon,Pollo,Sopa,Salchipapa,Cafe,Gaseosa)
     (expresion("struct-access" "." expresion)access-exp) ;struct-access.author
     (expresion("struct-change" "." expresion "=" expresion)change-exp) ;struct-change.author = StephenKing
@@ -180,30 +178,21 @@
                  [else (buscar-id (cdr lidd) lvall varr (+ pos 1))])))
             )
          (buscar-id lid lval var 0)))
+      
       (ambiente-extendido-recursivo
        (proc-names llargs bodies env-old)
-       (letrec
-           (
-            (buscar-proc
-             (lambda (proc-names llargs bodies)
-               (cond
-                 [(null? proc-names)
-                  (apply-env-ref env-old var)]
-                 [(eqv?
-                   (car proc-names)
-                   var)
-                  (a-ref
-                   0
-                   (list->vector 
-                    (list(clausura
-                    (car llargs)
-                    (car bodies)
-                    env))))
-                  ]
-                 [else
-                  (buscar-proc (cdr proc-names)
-                               (cdr llargs)
-                               (cdr bodies))]))))
+       (letrec(
+               (buscar-proc
+                (lambda (proc-names llargs bodies)
+                  (cond
+                    [(null? proc-names)
+                     (apply-env-ref env-old var)]
+                    [(eqv?(car proc-names)var)
+                     (a-ref 0 (list->vector (list(clausura (car llargs)(car bodies)env))))]
+                    [else
+                     (buscar-proc (cdr proc-names)
+                                  (cdr llargs)
+                                  (cdr bodies))]))))
          (buscar-proc proc-names llargs bodies))))))
 
 
@@ -227,7 +216,7 @@
   (lambda (exp env)
     (cases expresion exp
       (lit-exp (exp) exp)
-      (var-exp (exp) exp)
+      (var-exp (exp) (apply-env env exp))
       (prim-exp (prim)(evaluar-primitivas prim env)) 
       (bool-exp(exp)(evaluar-bool-exp exp env))  
       (text-exp (exp)(let([x(map(lambda(x) (symbol->string x))exp)])(car x)))
@@ -278,25 +267,39 @@
                    (evaluar-expresion exp env)
                    (begin
                      (evaluar-expresion exp env)
-                     (letrec
-                         ((eval-exps (lambda (lexp)
-                                       (cond
-                                         [(null? (cdr lexp)) (evaluar-expresion (car lexp) env)]
-                                         [else
-                                          (begin
-                                            (evaluar-expresion (car lexp) env)
-                                            (eval-exps (cdr lexp)))]))))
+                (letrec
+                    ((eval-exps
+                      (lambda (lexp)
+                        (cond
+                 [(null? (cdr lexp)) (evaluar-expresion (car lexp) env)]
+                 [else
+                  (begin
+                    (evaluar-expresion (car lexp) env)
+                    (eval-exps (cdr lexp)))]))))
                        (eval-exps lexp)))))
+      
       
       (set-exp (id exp)
                (let
                    (
-                    (ref (apply-env-ref env id))
-                    (val (evaluar-expresion exp env))
+                    [ref (apply-env-ref env id)]
+                    [val (evaluar-expresion exp env)]
                     )
                  (begin
-                   (set-ref! ref val)
-                   0)))
+                   (set-ref! ref val)0)))
+
+     (while-exp (it exp)
+                (letrec
+                    (
+                     [contador 0]
+                     [it1 (evaluar-expresion it env)]
+                     [exp1 (evaluar-expresion exp env)]
+                     [while(lambda (iter expr)
+                             (cond
+                               [(eqv? iter expr)expr]
+                               [else (while (+ 1 iter) expr)]))])
+                  (while 1 exp1)))
+                            
       (else 0))))
 
 
