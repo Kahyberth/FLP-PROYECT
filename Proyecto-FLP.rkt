@@ -152,9 +152,8 @@
    (proc-names (list-of symbol?))
    (llargs (list-of (list-of symbol?)))
    (lbodys (list-of expresion?)) ;Cuerpo procs
-   (env ambiente?));Expresion a evaluarambiente-extendido-recursivo
-   )
-  
+   (env ambiente?)));Expresion a evaluarambiente-extendido-recursivo
+
 
 
 (define apply-env
@@ -321,6 +320,7 @@
                                          
       (else "ok"))))
 
+
 ;Evaluar primitivas booleanas
 (define evaluar-primitiva-bool
   (lambda (bool-exp lval1 lval2)
@@ -334,6 +334,7 @@
       (else "ok"))))
 
 
+;Evalua los Operadores logicos
 (define evaluar-operadores
   (lambda (logic lval lval2)
     (cases bool-oper logic
@@ -342,6 +343,8 @@
       (not-op () (not lval))
       (else 0))))
 
+
+;Se encarga de evaluar las primitivas aritmeticas (especialmente las que vienen de una lista)
 (define evaluar-primitivas
   (lambda (prim lval lval2 prim2 ls-exp)
     (cases primitiva prim
@@ -351,6 +354,7 @@
       (div-prim () (operacion / lval lval2 ls-exp 0))
       (else "ok"))))
 
+;Se encarga de evaluar las primitivas aritmeticas (Alternativa)
 (define evaluar-alternativa
   (lambda (prim lval1)
     (cases primitiva prim
@@ -365,7 +369,9 @@
       (sub1-prim () (- (car lval1)1 ))
       (else 0))))
 
-  
+
+
+;Realiza operaciones aritmeticas
 (define operacion
   (lambda (op lval lval2 lsexp ac)
     (cond
@@ -384,6 +390,7 @@
 (define-datatype referencia referencia?
   (a-ref (pos number?)
          (vec vector?)))
+
 ;Extractor de referencia
 (define deref
   (lambda (ref)
@@ -397,7 +404,6 @@
              (vector-ref vec pos)))))
 
 ;Muta el valor pasado por posición del vector
-
 (define set-ref!
   (lambda (ref val)
     (primitiva-setref! ref val)))
@@ -409,13 +415,6 @@
       (a-ref(pos vec)
             (vector-set! vec pos val)))))
 
-
-
-
-
-;(define apply-env
-;  (lambda (env var)
-;    (deref (apply-env-ref env var))))
 
 
 ;----------------------------------------------------------------------------------------
