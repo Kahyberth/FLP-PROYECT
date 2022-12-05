@@ -47,8 +47,6 @@
 
 |#
 
-
-
 ;Especificacion lexicografica
 
 (define especificacion-lexica
@@ -155,7 +153,7 @@
    (env ambiente?)));Expresion a evaluarambiente-extendido-recursivo
 
 
-
+;Apply Env
 (define apply-env
   (lambda (amb var)
     (deref (apply-env-ref amb var))))
