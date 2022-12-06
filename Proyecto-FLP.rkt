@@ -1,9 +1,9 @@
 #lang eopl
 
 ;INTEGRANTES
-;Kahyberth Stiven Gonzalez Sayas:2060121
-;Juan Camilo Varela Ocoro:206016
-;Nota: Cada ejemplo aparece al lado de cada especificacion lexicografica.
+;Kahyberth Stiven Gonzalez Sayas
+;Juan Camilo Varela Ocoro
+;Nota: Cada ejemplo aparece al lado de cada especificacion gramatical.
 
 #|
 -------------------------------------------------------------------------------------------->
@@ -156,10 +156,11 @@
   (lambda (env var)
     (deref (apply-env-ref env var))))
 
+;Definicion apply-env-ref
 (define apply-env-ref
   (lambda (env var)
     (cases ambiente env
-      (ambiente-vacio () (eopl:error "No se encuentra la variable " var))
+      (ambiente-vacio () (eopl:error "~a No se encuentra la variable " var))
       (ambiente-extendido-ref (lid vec old-env)
           (letrec(
                   (buscar-variable (lambda (lid vec pos)
@@ -171,6 +172,7 @@
             (buscar-variable lid vec 0)
             )))))
 
+ ;Definicion de ambiente extendido
  (define ambiente-extendido-recursivo
   (lambda (procnames lidss cuerpos old-env)
     (let
@@ -193,13 +195,13 @@
 
 
     
-
+;Definicion del ambiente inicial
 (define ambiente-inicial
   (ambiente-extendido '(x y z) '(4 2 5)
                       (ambiente-extendido '(a b c) '(4 5 6)
                                           (ambiente-vacio))))
 
-
+;Definicion de Procval
 (define-datatype procval procval?
   (closure (lid (list-of symbol?))
             (body expresion?)
@@ -211,11 +213,17 @@
 (define evaluar-expresion
   (lambda (exp env)
     (cases expresion exp
+      ;Numeros
       (lit-exp (exp) exp)
+      ;Var-exp
       (var-exp (exp) (apply-env env exp))
-      (prim-exp (prim)(evaluar-primitivas prim env)) 
-      (bool-exp(exp)(evaluar-bool-exp exp env))  
+      ;Primitivas
+      (prim-exp (prim)(evaluar-primitivas prim env))
+      ;Booleanos
+      (bool-exp(exp)(evaluar-bool-exp exp env))
+      ;Texto
       (text-exp (exp)(let([x(map(lambda(x) (symbol->string x))exp)])(car x)))
+      ;console.log -> para imprimir texto
       (console-exp (txt)(let
                   ([texto (map(lambda(x) (symbol->string x))txt)])
                   (letrec
@@ -225,12 +233,13 @@
                          [(list? lista-txt)(string-append (car lista-txt)" "(concatenate(cdr lista-txt)))]
                          [else (concatenate (cdr lista-txt))]))))(concatenate texto))))
 
+      ;Bloque condicional if
       (if-exp (bool exp1 exp2)(let([ls-exp(evaluar-expresion exp1 env)]
                                    [ls-exp2(evaluar-expresion exp2 env)])
                                 (if (evaluar-bool-exp bool env)
                                     ls-exp
                                     ls-exp2)))
-
+      ;Ligaduras 
       (let-exp (ids rands body)
                (let
                    (
@@ -238,6 +247,7 @@
                     )
                  (evaluar-expresion body (ambiente-extendido ids ls-rands env))))
 
+      ;Realiza las operaciones aritmeticas
       (op-exp (exp prim exp2 prim2 lsexp)
                 (let*
                     (
@@ -247,6 +257,7 @@
                      )
                   (evaluar-primitivas prim ls-exp1 ls-exp2 prim2 ls-exp3)))
 
+      ;Realiza las operaciones alternativas Array.[]
       (only-exp (expresion primitiva)
                 (let
                     (
@@ -254,10 +265,12 @@
                      )
                   (evaluar-alternativa primitiva ls-exp)))
 
+      ;Evaluar primitivas en dos en dos []
       (lst-exp (exp prim)
                (let([x(map(lambda(y)(evaluar-expresion y env))exp)])
                  (evaluar-alternativa prim x)))
-
+      
+      ;Begin (secuenciacion)
       (begin-exp (exp lexp)
                  (if (null? lexp)
                    (evaluar-expresion exp env)
@@ -274,7 +287,7 @@
                     (eval-exps (cdr lexp)))]))))
                        (eval-exps lexp)))))
       
-      
+      ;Set
       (set-exp (id exp)
                (let
                    (
@@ -283,10 +296,29 @@
                     )
                  (begin
                    (set-ref! ref val)0)))
-
+      ;Proc
       (proc-exp(id body)
                (closure id body env))
 
+      ;App-exp
+      (app-exp (rator rands)
+               (let
+                   (
+                    [ls-rands (map(lambda(x) (evaluar-expresion x env))rands)]
+                    [procV (evaluar-expresion rator env)]
+                    )
+                 (if
+                  (procval? procV)
+                  (cases procval procV
+                    (closure (lid body old-env)
+                             (if (= (length lid) (length ls-rands))
+                             (evaluar-expresion body (ambiente-extendido lid ls-rands old-env))
+                             (eopl:error"El numero de argumentos no es correcto, debe enviar -> " (length lid)))))
+                  (eopl:error"~a No se puede evaluar el procedimiento" procV))))
+                 
+               
+      
+      ;While
      (while-exp (it exp)
                 (letrec
                     (
