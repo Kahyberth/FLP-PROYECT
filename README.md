@@ -112,6 +112,16 @@ let x = proc(a,b,c,d) x in a
 Example:
 console.log("Hola Mundo")
 console.log("Hello World")
+let x = 5 in let f = proc(y,z) [y,[z,x].-].+ x = 28
+in [[f 2 x]]
+```
+
+
+## App-exp
+```
+Example:
+let x = 5 in let f = proc(y,z) [y,[z,x].-].+ x = 28
+in [[f 2 x]]
 ```
 
 
