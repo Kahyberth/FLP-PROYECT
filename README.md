@@ -1,9 +1,3 @@
-# FLP-PROYECT 🔴
-
-**This project covers all the concepts seen in the Fundamentals of Programming Languages course, in which a language is developed using Dr. Racket's SLLGEN library and based on the teacher's guide -> [Youtube](https://www.youtube.com/watch?v=kI9sWhWVIMI&list=PLi3X2PHYk7zTmdZNBiAe0c5S_-gAjBGeC)**
-
-
-
 <div align="center">
 
   <img src="![imagen](https://user-images.githubusercontent.com/69951209/205931913-80997fc3-d9fd-44ea-a268-5c63aca5bd7c.png)" width="200" height="auto" />
@@ -54,9 +48,9 @@
 <!-- About the Project -->
 ## :star2: About the Project
 
-<div align="center"> 
- ![12](https://user-images.githubusercontent.com/69951209/205929677-1b4a74cb-1fc4-420f-a671-485e4edba92b.png)
-</div>
+**This project covers all the concepts seen in the Fundamentals of Programming Languages course, in which a language is developed using Dr. Racket's SLLGEN library and based on the teacher's guide -> [Youtube](https://www.youtube.com/watch?v=kI9sWhWVIMI&list=PLi3X2PHYk7zTmdZNBiAe0c5S_-gAjBGeC)**
+
+ ![12](https://user-images.githubusercontent.com/69951209/205933255-4b11473f-5004-41a0-a7be-2e9d5ab4a5d7.png)
 
 
 <!-- TechStack -->
@@ -139,7 +133,6 @@ Start the server
 <!-- Usage -->
 ## :eyes: Usage
 
-Use this space to tell a little more about your project and how it can be used. Show additional screenshots, code samples, demos or link to other resources.
 
 
 
@@ -167,6 +160,8 @@ Distributed under the no License.
 ## :handshake: Contact
 
 Kahyberth - [@twitter_handle](https://twitter.com/SG5882) - kahyberthst@gmail.com
+
+
 
 
 
