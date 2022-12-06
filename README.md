@@ -1,6 +1,7 @@
 <div align="center">
 
-  <img src="![imagen](https://user-images.githubusercontent.com/69951209/205931913-80997fc3-d9fd-44ea-a268-5c63aca5bd7c.png)" width="200" height="auto" />
+  ![imagen](https://user-images.githubusercontent.com/69951209/205935279-3c3c6c70-53c2-485b-85bc-c88854a0977d.png)
+
   <h1>FLP PROYECT</h1>
   
   <p>
@@ -31,13 +32,8 @@
 </p>
    
 <h4>
-    <a href="https://github.com/Louis3797/awesome-readme-template/">View Demo</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template">Documentation</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Report Bug</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Request Feature</a>
+    <a href="https://docs.racket-lang.org/eopl/index.html">Documentation</a>
   </h4>
 </div>
 
@@ -71,68 +67,8 @@
 
 
 
-<!-- OPERACIONES -->
-### :key: Environment Variables
-
-To run this project, you will need to add the following environment variables to your .env file
-
-`API_KEY`
-
-`ANOTHER_API_KEY`
-
-<!-- Getting Started -->
-## 	:toolbox: Getting Started
-
-<!-- Prerequisites -->
-### :bangbang: Prerequisites
-
-This project uses Yarn as package manager
-
-```bash
- npm install --global yarn
-```
-
-<!-- Installation -->
-### :gear: Installation
-
-Install my-project with npm
-
-```bash
-  yarn install my-project
-  cd my-project
-```
-
-
-<!-- Run Locally -->
-### :running: Run Locally
-
-Clone the project
-
-```bash
-  git clone https://github.com/Louis3797/awesome-readme-template.git
-```
-
-Go to the project directory
-
-```bash
-  cd my-project
-```
-
-Install dependencies
-
-```bash
-  yarn install
-```
-
-Start the server
-
-```bash
-  yarn start
-```
-
-
 <!-- Usage -->
-## :eyes: Usage
+## :eyes: INSTRUCTIONS FOR USE
 
 
 
@@ -160,7 +96,7 @@ Distributed under the no License.
 <!-- Contact -->
 ## :handshake: Contact
 
-Kahyberth - [@twitter_handle](https://twitter.com/SG5882) - kahyberthst@gmail.com
+Kahyberth - [@SG5882](https://twitter.com/SG5882) - kahyberthst@gmail.com
 
 
 
