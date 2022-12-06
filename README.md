@@ -10,7 +10,7 @@
 
   
 <!-- Badges -->
-[![GitHub contributors](https://badgen.net/github/contributors/Kahyberth/FLP-PROYECT)](https://GitHub.com/Naereen/Strapdown.js/graphs/contributors/)
+[![GitHub contributors](https://badgen.net/github/contributors/Kahyberth/FLP-PROYECT)](https://GitHub.com/Kahyberth/FLP-PROYECT/graphs/contributors/)
    
 <h4>
   <span> · </span>
