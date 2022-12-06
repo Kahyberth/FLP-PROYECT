@@ -11,24 +11,7 @@
   
 <!-- Badges -->
 <p>
-  <a href="https://github.com/Kahyberth/FLP-PROYECT/graphs/contributors">
-    [GitHub contributors](https://badgen.net/github/contributors/Kahyberth/FLP-PROYECT)
-  </a>
-  <a href="">
-    <img src="https://img.shields.io/github/last-commit/Kahyberth/FLP-PROYECT/" alt="last update" />
-  </a>
-  <a href="https://github.com/Kahyberth/FLP-PROYECT/network/members">
-    <img src="https://img.shields.io/github/forks/Kahyberth/FLP-PROYECT/" alt="forks" />
-  </a>
-  <a href="https://github.com/Kahyberth/FLP-PROYECT/stargazers">
-    <img src="https://img.shields.io/github/stars/Kahyberth/FLP-PROYECT/" alt="stars" />
-  </a>
-  <a href="https://github.com/Kahyberth/FLP-PROYECT/issues/">
-    <img src="https://img.shields.io/github/issues/Kahyberth/FLP-PROYECT/" alt="open issues" />
-  </a>
-  <a href="https://github.com/Kahyberth/FLP-PROYECT/blob/master/LICENSE">
-    
-  </a>
+ 
 </p>
    
 <h4>
