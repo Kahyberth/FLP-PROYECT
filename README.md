@@ -12,7 +12,7 @@
 <!-- Badges -->
 <p>
   <a href="https://github.com/Kahyberth/FLP-PROYECT/graphs/contributors">
-    [![GitHub contributors](https://badgen.net/github/contributors/Kahyberth/FLP-PROYECT)](https://GitHub.com/Kahyberth/FLP-PROYECT/graphs/contributors/)>
+    [![GitHub contributors](https://badgen.net/github/contributors/Kahyberth/FLP-PROYECT)]
   </a>
   <a href="">
     <img src="https://img.shields.io/github/last-commit/Kahyberth/FLP-PROYECT/" alt="last update" />
