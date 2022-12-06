@@ -1,6 +1,6 @@
 <div align="center">
 
-  ![imagen](https://user-images.githubusercontent.com/69951209/205935279-3c3c6c70-53c2-485b-85bc-c88854a0977d.png)
+  
 
   <h1>FLP PROYECT</h1>
   
@@ -10,9 +10,7 @@
 
   
 <!-- Badges -->
-<p>
- 
-</p>
+[![GitHub contributors](https://badgen.net/github/contributors/Kahyberth/FLP-PROYECT)](https://GitHub.com/Naereen/Strapdown.js/graphs/contributors/)
    
 <h4>
   <span> · </span>
@@ -29,7 +27,7 @@
 
 ***This project covers all the concepts seen in the Fundamentals of Programming Languages course, in which a language is developed using Dr. Racket's SLLGEN library and based on the teacher's guide -> [Youtube](https://www.youtube.com/watch?v=kI9sWhWVIMI&list=PLi3X2PHYk7zTmdZNBiAe0c5S_-gAjBGeC)***
 
- ![12](https://user-images.githubusercontent.com/69951209/205933925-f9472978-02d5-4371-8e52-c5edafc71a69.png)
+ [![intro.png](https://i.postimg.cc/qvXhkCM9/intro.png)](https://postimg.cc/tsJCkJ65)
 
 
 
@@ -47,15 +45,74 @@
 
 
 
-
-
-
 <!-- Usage -->
 ## :eyes: INSTRUCTIONS FOR USE
 
+## Arithmetic
+```
+To perform additions, simply type in the interpreter
+(1+2+2+3+4+5+6+7+8+9) ---> 47
+```
 
 
+## Conditional block
+```
+To perform conditionals, it is declared as follows example:
 
+if .[{2 < 3} and {10 > 5}] then true else false ;
+```
+
+
+## Arrays
+```
+Added a visual way of arrays with limited functionality, but essential for basic operations.
+
+[1,2,3,4,5,6,7,8,9,10,321,21,3,4,21].length
+```
+
+
+## Boolean
+```
+Boolean Primitives
+
+true --> #t
+false ---> #f
+
+```
+
+
+## Logical Operators
+```
+Basic Logical Operators
+
+Example:
+.[{2 < 3} and {3 > 1}]
+.[{2 < 3} or {3 > 1}]
+
+```
+
+## Set!
+```
+Example:
+set hola := adios
+set Hello := Goodbye
+
+```
+
+## Proc
+```
+Example:
+let a = proc(x,y) x in a
+let b = proc(x,y,z) [x,y].+ in b
+let x = proc(a,b,c,d) x in a
+```
+
+## Console Log
+```
+Example:
+console.log("Hola Mundo")
+console.log("Hello World")
+```
 
 
 
@@ -65,8 +122,6 @@
 <a href="https://github.com/Kahyberth/FLP-PROYECT/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Kahyberth/FLP-PROYECT" />
 </a>
-
-
 
 
 
