@@ -1,9 +1,17 @@
 #lang eopl
 
+
 ;INTEGRANTES
+<<<<<<< Updated upstream
 ;Kahyberth Stiven Gonzalez Sayas
 ;Juan Camilo Varela Ocoro
 ;Nota: Cada ejemplo aparece al lado de cada especificacion gramatical.
+=======
+;Kahyberth Stiven Gonzalez Sayas:2060121
+;Juan Camilo Varela Ocoro:206016
+
+;Nota: Cada ejemplo aparece al lado de cada especificacion lexicografica.
+>>>>>>> Stashed changes
 
 #|
 -------------------------------------------------------------------------------------------->
@@ -77,8 +85,7 @@
     (expresion("Array" "." "[" (separated-list expresion ",") "]" "." primitiva )only-exp) ;Array.[1,2,3,4,5,6,7].length, example
     (expresion("[" (separated-list expresion ",") "]" "." primitiva) lst-exp) ;[123,321,3,4,3,21,32]
     (expresion("if" bool-expresion "then" expresion "else" expresion ";")if-exp) ;if {3 < 2} then 2 else 3 end
-    (expresion("proc" "(" (separated-list identificador ",") ")" expresion)proc-exp) ; proc (Arroz,Pollo,Gasimba) Pollo end
-    (expresion("[[" expresion (arbno expresion) "]]")app-exp)
+    (expresion("proc" "(" (separated-list identificador ",") ")" expresion "end")proc-exp) ; proc (Arroz,Pollo,Gasimba) Pollo end
     (expresion("for" identificador "=" expresion "to" expresion "do" expresion "end")for-exp) ;for bucle = Array.[1,2,3,4,5].length to 4 do 5 end
     (expresion("while"  expresion "then" expresion "end")while-exp) ;while {x < 3} then (x = (x + 1)) end, example
     (expresion("struct" "=" identificador "(" (separated-list expresion ",") ")")struct-exp) ;struct = Menu (Salmon,Pollo,Sopa,Salchipapa,Cafe,Gaseosa)
@@ -141,25 +148,28 @@
 ;Definicion de ambientes
 (define-datatype ambiente ambiente?
   (ambiente-vacio)
-  (ambiente-extendido-ref
-   (lids (list-of symbol?))
-   (lvalue vector?)
-   (old-env ambiente?)))
+  (ambiente-extendido
+   (lid (list-of symbol?))
+   (lva vector?)
+   (env ambiente?))
+  (ambiente-extendido-recursivo
+   (proc-names (list-of symbol?))
+   (llargs (list-of (list-of symbol?)))
+   (lbodys (list-of expresion?)) ;Cuerpo procs
+   (env ambiente?)));Expresion a evaluarambiente-extendido-recursivo
 
-;Ambiente extendido
-(define ambiente-extendido
-  (lambda (lids lvalue old-env)
-    (ambiente-extendido-ref lids (list->vector lvalue) old-env)))
 
-;Apply-env
+;Apply Env
 (define apply-env
-  (lambda (env var)
-    (deref (apply-env-ref env var))))
+  (lambda (amb var)
+    (deref (apply-env-ref amb var))))
+
 
 ;Definicion apply-env-ref
 (define apply-env-ref
   (lambda (env var)
     (cases ambiente env
+<<<<<<< Updated upstream
       (ambiente-vacio () (eopl:error "~a No se encuentra la variable " var))
       (ambiente-extendido-ref (lid vec old-env)
           (letrec(
@@ -192,18 +202,49 @@
                       (obtener-clausuras (cdr lidss) (cdr cuerpos) (+ pos 1)))]
                    ))))
         (obtener-clausuras lidss cuerpos 0)))))
+=======
+      (ambiente-vacio () (eopl:error "No se encuentra la ligadura " var))
+      (ambiente-extendido
+       (lid lval old-env)
+       (letrec
+           (
+            (buscar-id
+             (lambda (lidd lvall varr pos)
+               (cond
+                 [(null? lidd) (apply-env-ref old-env varr)]
+                 [(eqv? (car lidd) varr) (a-ref pos lvall)]
+                 [else (buscar-id (cdr lidd) lvall varr (+ pos 1))])))
+            )
+         (buscar-id lid lval var 0)))
+      
+      (ambiente-extendido-recursivo
+       (proc-names llargs bodies env-old)
+       (letrec(
+               (buscar-proc
+                (lambda (proc-names llargs bodies)
+                  (cond
+                    [(null? proc-names)
+                     (apply-env-ref env-old var)]
+                    [(eqv?(car proc-names)var)
+                     (a-ref 0 (list->vector (list(clausura (car llargs)(car bodies)env))))]
+                    [else
+                     (buscar-proc (cdr proc-names)
+                                  (cdr llargs)
+                                  (cdr bodies))]))))
+         (buscar-proc proc-names llargs bodies))))))
+>>>>>>> Stashed changes
 
 
     
 ;Definicion del ambiente inicial
 (define ambiente-inicial
-  (ambiente-extendido '(x y z) '(4 2 5)
-                      (ambiente-extendido '(a b c) '(4 5 6)
+  (ambiente-extendido '(x y z) (list->vector '(1 2 3)) 
+                      (ambiente-extendido '(a b c) (list->vector '(4 5 6))
                                           (ambiente-vacio))))
 
 ;Definicion de Procval
 (define-datatype procval procval?
-  (closure (lid (list-of symbol?))
+  (clausura (lid (list-of symbol?))
             (body expresion?)
             (env ambiente?)))
 
@@ -296,6 +337,7 @@
                     )
                  (begin
                    (set-ref! ref val)0)))
+<<<<<<< Updated upstream
       ;Proc
       (proc-exp(id body)
                (closure id body env))
@@ -319,6 +361,9 @@
                
       
       ;While
+=======
+
+>>>>>>> Stashed changes
      (while-exp (it exp)
                 (letrec
                     (
@@ -348,7 +393,8 @@
                                             [ls-exp1 (evaluar-expresion exp env)]
                                             [ls-exp2 (evaluar-expresion exp2 env)]
                                             )
-                                         (evaluar-operadores bool-logic ls-exp1 ls-exp2)))               
+                                         (evaluar-operadores bool-logic ls-exp1 ls-exp2)))
+                                         
       (else "ok"))))
 
 
