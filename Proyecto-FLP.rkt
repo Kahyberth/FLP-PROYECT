@@ -1,18 +1,10 @@
 #lang eopl
 
-
 ;INTEGRANTES
-<<<<<<< Updated upstream
 ;Kahyberth Stiven Gonzalez Sayas
 ;Juan Camilo Varela Ocoro
 ;Nota: Cada ejemplo aparece al lado de cada especificacion gramatical.
-=======
-;Kahyberth Stiven Gonzalez Sayas:2060121
-;Juan Camilo Varela Ocoro:206016
-
-;Nota: Cada ejemplo aparece al lado de cada especificacion lexicografica.
->>>>>>> Stashed changes
-
+;Completado
 #|
 -------------------------------------------------------------------------------------------->
 
@@ -83,14 +75,15 @@
     (expresion(primitiva)prim-exp) ;Representa las primitivas
     (expresion("("  expresion primitiva expresion (arbno primitiva expresion) ")")op-exp) ;Representa las operaciones -> (1 + 2 + 3 + 4 + 5 + 6)
     (expresion("Array" "." "[" (separated-list expresion ",") "]" "." primitiva )only-exp) ;Array.[1,2,3,4,5,6,7].length, example
-    (expresion("[" (separated-list expresion ",") "]" "." primitiva) lst-exp) ;[123,321,3,4,3,21,32]
-    (expresion("if" bool-expresion "then" expresion "else" expresion ";")if-exp) ;if {3 < 2} then 2 else 3 end
-    (expresion("proc" "(" (separated-list identificador ",") ")" expresion "end")proc-exp) ; proc (Arroz,Pollo,Gasimba) Pollo end
+    (expresion("[" expresion primitiva expresion "]") lst-exp) ;[123,321,3,4,3,21,32]
+    (expresion("if" bool-expresion "then" expresion "else" expresion)if-exp) ;if {3 < 2} then 2 else 3 end
+    (expresion("proc" "(" (separated-list identificador ",") ")" expresion)proc-exp) ; proc (Arroz,Pollo,Gasimba) Pollo end
+    (expresion("((" expresion (arbno expresion) "))")app-exp)
     (expresion("for" identificador "=" expresion "to" expresion "do" expresion "end")for-exp) ;for bucle = Array.[1,2,3,4,5].length to 4 do 5 end
-    (expresion("while"  expresion "then" expresion "end")while-exp) ;while {x < 3} then (x = (x + 1)) end, example
-    (expresion("struct" "=" identificador "(" (separated-list expresion ",") ")")struct-exp) ;struct = Menu (Salmon,Pollo,Sopa,Salchipapa,Cafe,Gaseosa)
-    (expresion("struct-access" "." expresion)access-exp) ;struct-access.author
-    (expresion("struct-change" "." expresion "=" expresion)change-exp) ;struct-change.author = StephenKing
+    (expresion("while"  identificador expresion "then" identificador expresion "end")while-exp) ;while {x < 3} then (x = (x + 1)) end, example
+    (expresion("struct" "=" identificador "(" (separated-list expresion ",") ")")struct-exp) ;struct = book ("El cazador de sueños","StephenKing",2001)
+    (expresion("struct-access" "." expresion)access-exp) ;struct-access.book
+    (expresion("struct-change" "." identificador "." expresion "=" expresion)change-exp) ;struct-change.book.author = StephenKing
     
     ;Bool-expresion
 
@@ -122,6 +115,7 @@
     (bool-primitiva(">=")mayor-igual-prims) ; {89 >= 21}
     (bool-primitiva("==")igual-prims)       ; {7 == 7}
     (bool-primitiva("!=")difer-prims)       ; {4 != 3}
+   
 
     ;Bool-operation
     
@@ -148,28 +142,25 @@
 ;Definicion de ambientes
 (define-datatype ambiente ambiente?
   (ambiente-vacio)
-  (ambiente-extendido
-   (lid (list-of symbol?))
-   (lva vector?)
-   (env ambiente?))
-  (ambiente-extendido-recursivo
-   (proc-names (list-of symbol?))
-   (llargs (list-of (list-of symbol?)))
-   (lbodys (list-of expresion?)) ;Cuerpo procs
-   (env ambiente?)));Expresion a evaluarambiente-extendido-recursivo
+  (ambiente-extendido-ref
+   (lids (list-of symbol?))
+   (lvalue vector?)
+   (old-env ambiente?)))
 
+;Ambiente extendido
+(define ambiente-extendido
+  (lambda (lids lvalue old-env)
+    (ambiente-extendido-ref lids (list->vector lvalue) old-env)))
 
-;Apply Env
+;Apply-env
 (define apply-env
-  (lambda (amb var)
-    (deref (apply-env-ref amb var))))
-
+  (lambda (env var)
+    (deref (apply-env-ref env var))))
 
 ;Definicion apply-env-ref
 (define apply-env-ref
   (lambda (env var)
     (cases ambiente env
-<<<<<<< Updated upstream
       (ambiente-vacio () (eopl:error "~a No se encuentra la variable " var))
       (ambiente-extendido-ref (lid vec old-env)
           (letrec(
@@ -202,49 +193,18 @@
                       (obtener-clausuras (cdr lidss) (cdr cuerpos) (+ pos 1)))]
                    ))))
         (obtener-clausuras lidss cuerpos 0)))))
-=======
-      (ambiente-vacio () (eopl:error "No se encuentra la ligadura " var))
-      (ambiente-extendido
-       (lid lval old-env)
-       (letrec
-           (
-            (buscar-id
-             (lambda (lidd lvall varr pos)
-               (cond
-                 [(null? lidd) (apply-env-ref old-env varr)]
-                 [(eqv? (car lidd) varr) (a-ref pos lvall)]
-                 [else (buscar-id (cdr lidd) lvall varr (+ pos 1))])))
-            )
-         (buscar-id lid lval var 0)))
-      
-      (ambiente-extendido-recursivo
-       (proc-names llargs bodies env-old)
-       (letrec(
-               (buscar-proc
-                (lambda (proc-names llargs bodies)
-                  (cond
-                    [(null? proc-names)
-                     (apply-env-ref env-old var)]
-                    [(eqv?(car proc-names)var)
-                     (a-ref 0 (list->vector (list(clausura (car llargs)(car bodies)env))))]
-                    [else
-                     (buscar-proc (cdr proc-names)
-                                  (cdr llargs)
-                                  (cdr bodies))]))))
-         (buscar-proc proc-names llargs bodies))))))
->>>>>>> Stashed changes
 
 
     
 ;Definicion del ambiente inicial
 (define ambiente-inicial
-  (ambiente-extendido '(x y z) (list->vector '(1 2 3)) 
-                      (ambiente-extendido '(a b c) (list->vector '(4 5 6))
+  (ambiente-extendido '(x y z) '(4 2 5)
+                      (ambiente-extendido '(a b c) '(4 5 6)
                                           (ambiente-vacio))))
 
 ;Definicion de Procval
 (define-datatype procval procval?
-  (clausura (lid (list-of symbol?))
+  (closure (lid (list-of symbol?))
             (body expresion?)
             (env ambiente?)))
 
@@ -306,10 +266,13 @@
                      )
                   (evaluar-alternativa primitiva ls-exp)))
 
-      ;Evaluar primitivas en dos en dos []
-      (lst-exp (exp prim)
-               (let([x(map(lambda(y)(evaluar-expresion y env))exp)])
-                 (evaluar-alternativa prim x)))
+      ;Evaluar primitivas en dos en dos [x+3]
+      (lst-exp (exp prim exp2)
+               (let(
+                    [l-exp (evaluar-expresion exp env)]
+                    [l-exp2 (evaluar-expresion exp2 env)]
+                    )
+                 (evaluar-alternativa prim (list l-exp l-exp2))))
       
       ;Begin (secuenciacion)
       (begin-exp (exp lexp)
@@ -337,7 +300,6 @@
                     )
                  (begin
                    (set-ref! ref val)0)))
-<<<<<<< Updated upstream
       ;Proc
       (proc-exp(id body)
                (closure id body env))
@@ -356,26 +318,7 @@
                              (if (= (length lid) (length ls-rands))
                              (evaluar-expresion body (ambiente-extendido lid ls-rands old-env))
                              (eopl:error"El numero de argumentos no es correcto, debe enviar -> " (length lid)))))
-                  (eopl:error"~a No se puede evaluar el procedimiento" procV))))
-                 
-               
-      
-      ;While
-=======
-
->>>>>>> Stashed changes
-     (while-exp (it exp)
-                (letrec
-                    (
-                     [contador 0]
-                     [it1 (evaluar-expresion it env)]
-                     [exp1 (evaluar-expresion exp env)]
-                     [while(lambda (iter expr)
-                             (cond
-                               [(eqv? iter expr)expr]
-                               [else (while (+ 1 iter) expr)]))])
-                  (while 1 exp1)))
-                            
+                  (eopl:error"~a No se puede evaluar el procedimiento" procV))))                
       (else 0))))
 
 
@@ -393,8 +336,7 @@
                                             [ls-exp1 (evaluar-expresion exp env)]
                                             [ls-exp2 (evaluar-expresion exp2 env)]
                                             )
-                                         (evaluar-operadores bool-logic ls-exp1 ls-exp2)))
-                                         
+                                         (evaluar-operadores bool-logic ls-exp1 ls-exp2)))               
       (else "ok"))))
 
 
@@ -407,7 +349,7 @@
       (menor-igual-prims () (<= lval1  lval2))
       (mayor-igual-prims () (>= lval1  lval2))
       (igual-prims () (eqv? lval1 lval2))
-      (difer-prims () (eqv? (not lval1) lval2))
+      (difer-prims () (not(eqv? lval1 lval2)))
       (else "ok"))))
 
 
@@ -435,10 +377,19 @@
 (define evaluar-alternativa
   (lambda (prim lval1)
     (cases primitiva prim
-      (sum-prim () (+ (car lval1) (cadr lval1)))
+      (sum-prim () (operacion-alternativa + lval1 0))
       (res-prim () (- (car lval1) (cadr lval1)))
       (mul-prim () (* (car lval1) (cadr lval1)))
       (div-prim () (/ (car lval1) (cadr lval1)))
+      (equal-prim () (letrec
+                         (
+                          [vec (list->vector lval1)]
+                          [equal-fuction
+                           (lambda (x y z)
+                             (cond
+                               [(vector? x)(vector-set! x y z)]
+                               [else eopl:error"No se puede cambiar el valor de la variable"]))])
+                       (equal-fuction vec 0 (cadr lval1))(vector-ref vec 0)))          
       (mod-prim () (modulo (car lval1) (cadr lval1)))
       (length-prim () (length lval1))
       (concat-prim () (string-append (car lval1) (cadr lval1)))
@@ -460,6 +411,14 @@
                                            [else (op (car lsexp1) (operacion-interna (cdr lsexp1) ac))]))))
                       (op lval lval2 (operacion-interna lsexp 0)))]
       [else eopl:error"No se puede realizar la suma"])))
+
+
+;Operaciones individuales
+(define operacion-alternativa
+  (lambda (op lst acc)
+    (cond
+      [(null? lst)0]
+      [else (op (car lst)(operacion-alternativa op (cdr lst) acc))])))
 
 
 
