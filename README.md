@@ -116,6 +116,14 @@ Example:
 .[{2 < 3} not {2 > 5}]
 ```
 
+## Environments
+```
+Example:
+let x = 200 in x
+let q = proc(x,y) [Array.[x].sub1 + [500 % 3]]in ((q 9 z))
+let z  = [x + 2] in z
+```
+
 ## Set!
 ```
 Example:
